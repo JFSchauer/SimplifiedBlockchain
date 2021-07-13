@@ -1,17 +1,22 @@
 Exercise 1:
 
-Each bit of the output of the hash function on a random input is equally likely to be a 1 or 0, so requiring n bits to be 0 would take on average 2^n attempts. Since we are requiring the output to have 4 0's, and each 0 is 4 bits, it takes on average 2^16 attempts to find a nonce.
+Each bit of the output of the hash function on a random input is equally likely to be
+a 1 or 0, so requiring n bits to be 0 would take on average 2^n attempts. 
+Since we are requiring the output to have 4 0's, and each 0 is 4 bits, 
+it takes on average 2^16 attempts to find a nonce.
 
 Requiring the hash to start with 5 0's adds 4 bits of 0's. This takes 2^20 attempts on average.
 
 Exercise 5:
 
-My code implements the decentralized blockchain using pthreads for each miner. Note this won't run on a windows machine. It runs on my Mac OS X, and probably will on unix like systems. Each thread is passed an id from 0 to 9. They use global variables for their blockchains so each other thread can access it. They also have a global variable that I
-use to interrupt the search for a nonce if another thread finds one. If a thread finds a
-nonce, it adds a new block to its chain, and sets the interrupt variable for each other
-thread to its own id. The other threads then verify the chain just added to and if its
-longer, their own chain is replaced with that chain. This continues until a chain reaches
-a length of 10.
+My code implements the decentralized blockchain using pthreads for each miner.
+Note this won't run on a windows machine. It runs on my Mac OS X, and probably will on
+unix like systems. Each thread is passed an id from 0 to 9. They use global variables for
+their blockchains so each other thread can access it. They also have a global variable
+that I use to interrupt the search for a nonce if another thread finds one. If a thread finds a nonce, it adds a new block to its chain, and sets the interrupt variable for 
+each other thread to its own id. The other threads then verify the chain just added to 
+and if its longer, their own chain is replaced with that chain. This continues
+until a chain reaches a length of 10.
 
 This blockchain will scale if the number of threads increases. The time taken to find
 a nonce will decrease proportionately if there are more threads executing simultaneously.
@@ -40,7 +45,8 @@ of the challenge was implementing the hash and the shared memory and the threads
 C because I enjoy using it, but I am confident I could have completed this in C++, Java,
 or Python. If I were to spend more time on this, I would implement the shared memory
 differently. Since I used global variables for the chains, each thread could overwrite
-the others blockchains, so I would find a way to make their blockchains read only. I appreciate this assignment, because it helped me understand blockchain more.
+the others blockchains, so I would find a way to make their blockchains read only.
+I appreciate this assignment, because it helped me understand blockchain more.
 Feel free to reach out with any more questions or comments: JFSchauer52@AOL.com
 
 To compile my code, you must install the openssl library, since my code relies on it
