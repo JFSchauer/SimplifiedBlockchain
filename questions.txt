@@ -1,0 +1,93 @@
+Exercise 1:
+
+Each bit of the output of the hash function on a random input is equally likely to be a 1 or 0, so requiring n bits to be 0 would take on average 2^n attempts. Since we are requiring the output to have 4 0's, and each 0 is 4 bits, it takes on average 2^16 attempts to find a nonce.
+
+Requiring the hash to start with 5 0's adds 4 bits of 0's. This takes 2^20 attempts on average.
+
+Exercise 5:
+
+My code implements the decentralized blockchain using pthreads for each miner. Note this won't run on a windows machine. It runs on my Mac OS X, and probably will on unix like systems. Each thread is passed an id from 0 to 9. They use global variables for their blockchains so each other thread can access it. They also have a global variable that I
+use to interrupt the search for a nonce if another thread finds one. If a thread finds a
+nonce, it adds a new block to its chain, and sets the interrupt variable for each other
+thread to its own id. The other threads then verify the chain just added to and if its
+longer, their own chain is replaced with that chain. This continues until a chain reaches
+a length of 10.
+
+This blockchain will scale if the number of threads increases. The time taken to find
+a nonce will decrease proportionately if there are more threads executing simultaneously.
+Though my machine can not run that many threads simulatneously, so adding more threads
+will not speed it up on my machine.
+
+If one thread stopped working it will have minimal effect on the blockchain. Block
+production would slow down slightly because there would be one less thread looking
+for a nonce. If the thread came back on later, it would need to verify the longest chain,
+and then it could continue as normal, and block production speed would be restored.
+
+Requiring the SHA256 hashes to start with more 0's slows down blockchain production
+exponentially. Since each 0 is 4 bits, each additional 0 requires 2^4 as much time to
+mine.
+
+It is not easy for a malicious thread to modify the miner fields in the chain. Changing
+the miner field would change the hash value, making the chain invalid. The only way a
+malicious thread could overwrite a previous block is by creating a chain longer than the
+current chain. But that would require the thread to get extremely lucky, since it would
+have to find nonces much faster than the other threads, or it would need to have more
+computing time than the other threads combined.
+
+The assignment took me about 10 hours across the last week. I learned about BitCoin and
+blockchain in my Computer Security class in college, so I already knew the basics. Most
+of the challenge was implementing the hash and the shared memory and the threads. I chose
+C because I enjoy using it, but I am confident I could have completed this in C++, Java,
+or Python. If I were to spend more time on this, I would implement the shared memory
+differently. Since I used global variables for the chains, each thread could overwrite
+the others blockchains, so I would find a way to make their blockchains read only. I appreciate this assignment, because it helped me understand blockchain more.
+Feel free to reach out with any more questions or comments: JFSchauer52@AOL.com
+
+To compile my code, you must install the openssl library, since my code relies on it
+to generate random bytes and to compute SHA256. Also I believe exercise 5 won't run
+on a windows machine because I used POSIX threads. The command I used to compile was
+gcc -o bin/exercise5.o src/exercise5.c -I/usr/local/opt/openssl/include /usr/local/opt/openssl/lib/libcrypto.a
+
+In case you can't compile my code, here is a sample output from exercise 5:
+
+Block 0:
+  Miner: 3
+  Nonce: KPRGZGZMTPHTOOOLQOOHGILILVWMYBPAMOOLKBQVFXGJSTJFELLBGBAZGMBZDXIIUPJTWHFPWTGTYMRJSEYFSHAVEDZPASWHAZD
+  Hash: 0000e58f9a94a953aaae3f7587298a59c3fa28b248222fc2643b2ff0d58a0d02
+Block 1:
+  Miner: 1
+  Nonce: QIGEQVTIGBZRMBHOYAGPQGKGPAVEMPPLXKE
+  Hash: 000078e68fbee4334ef3ba5cc0977b04e923eb8ab222d38bcc398a67c8a8a6f3
+Block 2:
+  Miner: 7
+  Nonce: SYQJUGOESCWDOOXYBKIYVOTHSLLCEXSJMEV
+  Hash: 0000060428fca09de6dd3e9b345f97672e6b7af516c63e650c85426461579ece
+Block 3:
+  Miner: 9
+  Nonce: ZOXTFOSVQFAMQWPPHGGRTMWLKRVRZKBIKOO
+  Hash: 0000dc81b00252f213a3b6e5c4a30bfd542d5b66b87248a9b473e4936f8eadc6
+Block 4:
+  Miner: 0
+  Nonce: HECZWMTCCJWYRDYRDUVCXFYHUQMHXMPOSCO
+  Hash: 000034c7af35a8e70bc6c46ad3782701dfb60d2369e8558e7ca07c015cc85fba
+Block 5:
+  Miner: 8
+  Nonce: BNBLKBNGSOKIDJKNBOKFLZULEBIWLJLSOZK
+  Hash: 00007196d3aba71d0f4c7b1189780733de5e59a6ed1e444bb0f97e9de4f134ae
+Block 6:
+  Miner: 8
+  Nonce: PMHXAVSJDIVIQGJJRLQUDWGTNXRJVAOMQRR
+  Hash: 0000a43cc7f58e5c3d3a388492de971ffbc0c77f9457a997c4fbd5e4d2922fb5
+Block 7:
+  Miner: 9
+  Nonce: ANCFNBDTCCQHFUTTEZGJQCMUNGYMHKDAGAB
+  Hash: 0000667e35c9c00e0bc65e3ab15086c3905cc413de21fef3828a23461ab533bc
+Block 8:
+  Miner: 7
+  Nonce: TXYBJJJZPPLAPMMEWDYJFHUZPDBRTJFAUEM
+  Hash: 0000a12128a8877cb847fa88848115f878244f16875803873ec58976d812dba5
+Block 9:
+  Miner: 2
+  Nonce: CYWZQHSVEAEATNMTQNUYATWVJVXVSDLDIVP
+  Hash: 00002e870247df21d877fac47c7b569ab9caa3843b371ec7430ff7e71794a49e
+
